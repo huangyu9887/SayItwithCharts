@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Say It with Charts — 实操指南</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1714;
+    --paper: #f5f0e8;
+    --accent: #c8401a;
+    --accent2: #2d5a8e;
+    --muted: #7a7268;
+    --rule: #d4ccc0;
+    --highlight: #f0e6d0;
+    --green: #2a6b4a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* Header */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 320px; height: 100%;
+    background: var(--accent);
+    clip-path: polygon(80px 0, 100% 0, 100% 100%, 0 100%);
+    opacity: 0.15;
+  }
+  .masthead-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .masthead h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  .masthead-sub {
+    font-size: 14px;
+    color: #a09888;
+    font-weight: 300;
+  }
+  .masthead-sub strong {
+    color: var(--paper);
+    font-weight: 500;
+  }
+
+  /* Layout */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  /* Section titles */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 52px 0 24px;
+  }
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--accent);
+    color: white;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0;
+  }
+  .section-header h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .section-header .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  /* Rule line */
+  .rule { border: none; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* Core principle box */
+  .principle {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 36px;
+    margin: 36px 0;
+    border-left: 5px solid var(--accent);
+    position: relative;
+  }
+  .principle-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .principle p {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    line-height: 1.55;
+    font-weight: 400;
+  }
+
+  /* 5-type grid */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 0 32px;
+  }
+  .type-card {
+    border: 1px solid var(--rule);
+    padding: 18px 14px;
+    position: relative;
+    background: white;
+    transition: border-color 0.2s;
+  }
+  .type-card:hover { border-color: var(--accent); }
+  .type-card .type-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .type-card .type-name {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .type-card .type-en {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  .type-card .type-chart {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+    background: #fdf0ec;
+    padding: 3px 8px;
+    display: inline-block;
+    border-radius: 2px;
+  }
+  .type-card .type-when {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* Decision flow */
+  .flow-wrap {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 32px;
+    margin: 20px 0;
+  }
+  .flow-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 0;
+  }
+  .flow-question {
+    background: var(--highlight);
+    border: 1px solid var(--rule);
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    width: 220px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .flow-question::after {
+    content: '→';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .flow-answers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-left: 24px;
+    flex: 1;
+  }
+  .flow-answer {
+    border: 1px solid var(--rule);
+    padding: 8px 14px;
+    font-size: 12px;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .flow-answer .ans-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .flow-answer .ans-chart {
+    font-weight: 500;
+    color: var(--accent2);
+  }
+  .flow-divider {
+    border: none;
+    border-top: 1px dashed var(--rule);
+    margin: 16px 0;
+  }
+
+  /* Title rule */
+  .title-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .title-box {
+    padding: 20px 22px;
+    border: 1px solid var(--rule);
+  }
+  .title-box.bad {
+    background: white;
+  }
+  .title-box.good {
+    background: white;
+    border-color: var(--green);
+  }
+  .title-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .badge-x { color: var(--accent); }
+  .badge-check { color: var(--green); }
+  .title-box .example {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .title-box .why {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Simplify rules */
+  .simplify-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .simplify-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 18px;
+    border: 1px solid var(--rule);
+    background: white;
+  }
+  .simplify-icon {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .simplify-icon.remove { background: #fde8e4; color: var(--accent); }
+  .simplify-icon.keep { background: #e4f0e8; color: var(--green); }
+  .simplify-text strong {
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .simplify-text span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Cheat sheet */
+  .cheatsheet {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 40px;
+    margin: 52px 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .cheatsheet-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    grid-column: 1/-1;
+  }
+  .cheat-col h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: #e8e0d4;
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+  }
+  .cheat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid #2a2825;
+    font-size: 13px;
+  }
+  .cheat-row .cr-label { color: #a09888; }
+  .cheat-row .cr-val { color: var(--paper); font-weight: 500; font-family: 'DM Mono', monospace; font-size: 12px; }
+
+  /* Warning box */
+  .warning {
+    border-left: 4px solid var(--accent);
+    background: #fdf0ec;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .warning strong { color: var(--accent); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    border-top: 1px solid var(--rule);
+    margin-top: 60px;
+  }
+
+  /* Before / After cases */
+  .ba-case {
+    margin-bottom: 48px;
+  }
+  .ba-label-row {
+    margin-bottom: 14px;
+  }
+  .ba-case-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .ba-panel {
+    border: 1px solid var(--rule);
+    padding: 20px 18px 16px;
+    background: white;
+  }
+  .bad-panel { border-top: 3px solid #c8401a; }
+  .good-panel { border-top: 3px solid #2a6b4a; }
+  .ba-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .bad-badge { color: var(--accent); }
+  .good-badge { color: var(--green); }
+  .ba-title-ex {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    padding: 6px 10px;
+    border-radius: 3px;
+  }
+  .bad-title {
+    background: #fdf0ec;
+    color: #a03010;
+    border-left: 3px solid var(--accent);
+  }
+  .good-title {
+    background: #e8f3ec;
+    color: #1a5232;
+    border-left: 3px solid var(--green);
+  }
+  .ba-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 10px;
+    line-height: 1.55;
+    border-top: 1px solid var(--rule);
+    padding-top: 8px;
+  }
+
+  @media (max-width: 640px) {
+    .ba-grid { grid-template-columns: 1fr; }
+
+    .masthead { padding: 32px 24px; }
+    .page { padding: 0 20px 60px; }
+    .type-grid { grid-template-columns: repeat(2, 1fr); }
+    .title-compare, .simplify-grid, .cheatsheet { grid-template-columns: 1fr; }
+    .flow-row { flex-direction: column; gap: 10px; }
+    .flow-question::after { display: none; }
+    .flow-answers { padding-left: 0; }
+    .masthead h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-label">实操指南 · 图表沟通</div>
+  <h1>Say It with Charts</h1>
+  <div class="masthead-sub">Gene Zelazny / McKinsey &amp; Company &nbsp;·&nbsp; <strong>五步法完整手册</strong></div>
+</div>
+
+<div class="page">
+
+  <div class="principle">
+    <div class="principle-label">核心原则</div>
+    <p>先确定你想说什么，再决定怎么说。<br>图表是观点的载体，不是数据的仓库。</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="section-header">
+    <div class="step-num">1</div>
+    <h2>明确你的信息</h2>
+    <div class="tag">Message First</div>
+  </div>
+  <hr class="rule">
+
+  <p style="margin-top:18px; color:var(--muted)">在打开 Excel 之前，先回答这一个问题：</p>
+
+  <div class="principle" style="margin-top:16px; padding:22px 30px;">
+    <div class="principle-label">自问</div>
+    <p style="font-size:16px;">「我希望观众看完这张图之后，记住什么？」</p>
+  </div>
+
+  <div class="warning">
+    <strong>常见错误：</strong>大多数人先画图再想说什么。结果是图表展示了数据，却没有传递观点。Zelazny 的起点正好相反——<strong>先写一句话观点，再选图表形式</strong>。
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section-header">
+    <div class="step-num">2</div>
+    <h2>确定比较类型</h2>
+    <div class="tag">Comparison Type</div>
+  </div>
+  <hr class="rule">
+
+  <p style="margin-top:18px; margin-bottom: 20px; color:var(--muted)">所有图表只做五种比较。先判断你在比什么，图表类型自然就出来了。</p>
+
+  <div class="type-grid">
+    <div class="type-card">
+      <span class="type-icon">◑</span>
+      <div class="type-name">构成</div>
+      <div class="type-en">COMPONENT</div>
+      <div class="type-chart">饼图 / 堆积图</div>
+      <div class="type-when">各部分占整体的比例是多少？</div>
+    </div>
+    <div class="type-card">
+      <span class="type-icon">▬</span>
+      <div class="type-name">排名</div>
+      <div class="type-en">ITEM</div>
+      <div class="type-chart">条形图</div>
+      <div class="type-when">各项目之间如何排名比较？</div>
+    </div>
+    <div class="type-card">
+      <span class="type-icon">╱</span>
+      <div class="type-name">时间序列</div>
+      <div class="type-en">TIME SERIES</div>
+      <div class="type-chart">折线图 / 柱状图</div>
+      <div class="type-when">数值随时间如何变化？</div>
+    </div>
+    <div class="type-card">
+      <span class="type-icon">▲</span>
+      <div class="type-name">频率分布</div>
+      <div class="type-en">FREQUENCY</div>
+      <div class="type-chart">直方图 / 曲线</div>
+      <div class="type-when">某范围内有多少项目？</div>
+    </div>
+    <div class="type-card">
+      <span class="type-icon">⁝</span>
+      <div class="type-name">相关性</div>
+      <div class="type-en">CORRELATION</div>
+      <div class="type-chart">散点图</div>
+      <div class="type-when">两个变量是否相关？</div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section-header">
+    <div class="step-num">3</div>
+    <h2>选择具体图表形式</h2>
+    <div class="tag">Chart Form</div>
+  </div>
+  <hr class="rule">
+
+  <p style="margin-top:18px; margin-bottom:20px; color:var(--muted)">根据比较类型 + 数据特征，快速定位最合适的图表。</p>
+
+  <div class="flow-wrap">
+
+    <div class="flow-row">
+      <div class="flow-question">时间序列<br><span style="font-size:11px;color:var(--muted);font-weight:400">数据点多还是少？</span></div>
+      <div class="flow-answers">
+        <div class="flow-answer"><span class="ans-label">数据点多 / 强调趋势</span> <span class="ans-chart">→ 折线图</span></div>
+        <div class="flow-answer"><span class="ans-label">数据点少 / 强调量级</span> <span class="ans-chart">→ 柱状图</span></div>
+        <div class="flow-answer"><span class="ans-label">多系列叠加</span> <span class="ans-chart">→ 堆积面积图</span></div>
+      </div>
+    </div>
+
+    <hr class="flow-divider">
+
+    <div class="flow-row">
+      <div class="flow-question">排名对比<br><span style="font-size:11px;color:var(--muted);font-weight:400">标签长短？数量多少？</span></div>
+      <div class="flow-answers">
+        <div class="flow-answer"><span class="ans-label">标签短、项目≤6</span> <span class="ans-chart">→ 纵向柱状图</span></div>
+        <div class="flow-answer"><span class="ans-label">标签长 / 项目多</span> <span class="ans-chart">→ 横向条形图</span></div>
+        <div class="flow-answer"><span class="ans-label">正负值对比</span> <span class="ans-chart">→ 瀑布图</span></div>
+      </div>
+    </div>
+
+    <hr class="flow-divider">
+
+    <div class="flow-row">
+      <div class="flow-question">构成比例<br><span style="font-size:11px;color:var(--muted);font-weight:400">切片数量？是否有时间维度？</span></div>
+      <div class="flow-answers">
+        <div class="flow-answer"><span class="ans-label">≤6个切片、静态</span> <span class="ans-chart">→ 饼图</span></div>
+        <div class="flow-answer"><span class="ans-label">>6个切片</span> <span class="ans-chart">→ 改用条形图</span></div>
+        <div class="flow-answer"><span class="ans-label">多时间点构成变化</span> <span class="ans-chart">→ 堆积柱状图</span></div>
+      </div>
+    </div>
+
+    <hr class="flow-divider">
+
+    <div class="flow-row">
+      <div class="flow-question">相关性<br><span style="font-size:11px;color:var(--muted);font-weight:400">两个变量的关系</span></div>
+      <div class="flow-answers">
+        <div class="flow-answer"><span class="ans-label">两变量相关</span> <span class="ans-chart">→ 散点图</span></div>
+        <div class="flow-answer"><span class="ans-label">加第三维度</span> <span class="ans-chart">→ 气泡图</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="section-header">
+    <div class="step-num">4</div>
+    <h2>写行动标题</h2>
+    <div class="tag">Action Title</div>
+  </div>
+  <hr class="rule">
+
+  <p style="margin-top:18px; margin-bottom:20px; color:var(--muted)">标题不是图表内容的描述，而是你的结论。这是 Zelazny 最核心的一条规则。</p>
+
+  <div class="title-compare">
+    <div class="title-box bad">
+      <div class="title-badge badge-x">✗ 描述性标题（错误）</div>
+      <div class="example">各地区季度销售额</div>
+      <div class="why">只说「是什么」，读者还要自己分析得出结论。</div>
+    </div>
+    <div class="title-box good">
+      <div class="title-badge badge-check">✓ 行动性标题（正确）</div>
+      <div class="example">华北区连续三季度领跑，西南区需重点关注</div>
+      <div class="why">直接给出「所以什么」，图表作为证据支撑这句话。</div>
+    </div>
+  </div>
+
+  <div class="title-compare">
+    <div class="title-box bad">
+      <div class="title-badge badge-x">✗</div>
+      <div class="example">用户增长趋势（2022–2024）</div>
+      <div class="why">数据范围描述，没有洞察。</div>
+    </div>
+    <div class="title-box good">
+      <div class="title-badge badge-check">✓</div>
+      <div class="example">付费用户增速在 Q3 放缓，须在年底前找到新的增长点</div>
+      <div class="why">包含时间、现象、以及隐含的行动建议。</div>
+    </div>
+  </div>
+
+  <div class="warning">
+    <strong>写标题的方法：</strong>先写「数据显示……」开头的一句话，然后删掉「数据显示」，剩下的就是你的行动标题。
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="section-header">
+    <div class="step-num">5</div>
+    <h2>简化设计</h2>
+    <div class="tag">Simplify</div>
+  </div>
+  <hr class="rule">
+
+  <p style="margin-top:18px; margin-bottom:20px; color:var(--muted)">每一个视觉元素都应该服务于你的信息。无法传递信息的元素，一律删除。</p>
+
+  <div class="simplify-grid">
+    <div class="simplify-item">
+      <div class="simplify-icon remove">✗</div>
+      <div class="simplify-text">
+        <strong>删除网格线</strong>
+        <span>轻量参考线代替，或直接标注数值</span>
+      </div>
+    </div>
+    <div class="simplify-item">
+      <div class="simplify-icon remove">✗</div>
+      <div class="simplify-text">
+        <strong>删除 3D 效果</strong>
+        <span>3D 柱/饼让数据失真，读者难以准确比较</span>
+      </div>
+    </div>
+    <div class="simplify-item">
+      <div class="simplify-icon remove">✗</div>
+      <div class="simplify-text">
+        <strong>删除装饰性颜色</strong>
+        <span>颜色只用于区分类别或强调关键数据</span>
+      </div>
+    </div>
+    <div class="simplify-item">
+      <div class="simplify-icon remove">✗</div>
+      <div class="simplify-text">
+        <strong>删除图例（如可能）</strong>
+        <span>直接在数据系列旁标注名称，减少视线跳动</span>
+      </div>
+    </div>
+    <div class="simplify-item">
+      <div class="simplify-icon keep">✓</div>
+      <div class="simplify-text">
+        <strong>保留关键数据标签</strong>
+        <span>最高/最低值、转折点直接标注在图上</span>
+      </div>
+    </div>
+    <div class="simplify-item">
+      <div class="simplify-icon keep">✓</div>
+      <div class="simplify-text">
+        <strong>保留数据来源</strong>
+        <span>在图表左下角注明数据来源，建立可信度</span>
+      </div>
+    </div>
+    <div class="simplify-item">
+      <div class="simplify-icon keep">✓</div>
+      <div class="simplify-text">
+        <strong>保留 Y 轴零基线</strong>
+        <span>柱状图必须从零开始，否则视觉上夸大差异</span>
+      </div>
+    </div>
+    <div class="simplify-item">
+      <div class="simplify-icon keep">✓</div>
+      <div class="simplify-text">
+        <strong>保留一致的字体层级</strong>
+        <span>标题 > 轴标签 > 数据标注，层级清晰</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER EXAMPLES -->
+  <div class="section-header" style="margin-top:60px">
+    <div class="step-num" style="background:var(--accent2)">⇄</div>
+    <h2>改前 vs 改后：真实案例</h2>
+    <div class="tag">Before / After</div>
+  </div>
+  <hr class="rule">
+  <p style="margin-top:18px; margin-bottom:32px; color:var(--muted)">同一份数据，用错误方式和正确方式呈现，传递效果截然不同。</p>
+
+  <!-- Case 1: 3D pie → bar -->
+  <div class="ba-case">
+    <div class="ba-label-row">
+      <span class="ba-case-title">案例 1：构成比例——切片过多的饼图 → 条形图</span>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-panel bad-panel">
+        <div class="ba-badge bad-badge">✗ 改前：8片饼图，无法比较</div>
+        <div class="ba-title-ex bad-title">各渠道流量占比</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c1bad"></canvas></div>
+        <div class="ba-note">切片过多、颜色杂乱，读者无法快速判断哪个渠道更重要。</div>
+      </div>
+      <div class="ba-panel good-panel">
+        <div class="ba-badge good-badge">✓ 改后：横向条形图，按大小排序</div>
+        <div class="ba-title-ex good-title">自然搜索是最大流量来源，占比近三成</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c1good"></canvas></div>
+        <div class="ba-note">按值降序排列，关键渠道一目了然，无需图例。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case 2: cluttered line → clean line with annotation -->
+  <div class="ba-case">
+    <div class="ba-label-row">
+      <span class="ba-case-title">案例 2：时间序列——杂乱折线图 → 聚焦关键信息</span>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-panel bad-panel">
+        <div class="ba-badge bad-badge">✗ 改前：五条线挤在一起，无重点</div>
+        <div class="ba-title-ex bad-title">各产品线月度收入（万元）</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c2bad"></canvas></div>
+        <div class="ba-note">五条颜色相近的线、密集网格线、无标注——读者不知道该看哪里。</div>
+      </div>
+      <div class="ba-panel good-panel">
+        <div class="ba-badge good-badge">✓ 改后：突出主角，灰化其他</div>
+        <div class="ba-title-ex good-title">产品C自Q3起逆势增长，已超越其他产品线</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c2good"></canvas></div>
+        <div class="ba-note">主线加粗加色，其余灰化；关键转折点直接标注数值。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case 3: Y axis truncated bar → zero-based -->
+  <div class="ba-case">
+    <div class="ba-label-row">
+      <span class="ba-case-title">案例 3：坐标轴——Y轴截断夸大差异 → 从零开始</span>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-panel bad-panel">
+        <div class="ba-badge bad-badge">✗ 改前：Y轴从80开始，差异被放大</div>
+        <div class="ba-title-ex bad-title">四城市用户满意度评分</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c3bad"></canvas></div>
+        <div class="ba-note">视觉上北京"高出一倍"，实际差距仅4分。这是数据操纵的常见手法。</div>
+      </div>
+      <div class="ba-panel good-panel">
+        <div class="ba-badge good-badge">✓ 改后：从零起始，差距还原真实比例</div>
+        <div class="ba-title-ex good-title">四城满意度接近，北京略高（88 vs 84）</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c3good"></canvas></div>
+        <div class="ba-note">柱状图必须从零开始。差距真实但细微——结论也要跟着改。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case 4: wrong chart type → right type -->
+  <div class="ba-case">
+    <div class="ba-label-row">
+      <span class="ba-case-title">案例 4：图表类型——用折线图比较无序类别 → 条形图</span>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-panel bad-panel">
+        <div class="ba-badge bad-badge">✗ 改前：折线图暗示了不存在的趋势</div>
+        <div class="ba-title-ex bad-title">各部门年度预算（万元）</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c4bad"></canvas></div>
+        <div class="ba-note">折线图用于连续时间数据。部门之间没有顺序关系，折线制造了虚假趋势。</div>
+      </div>
+      <div class="ba-panel good-panel">
+        <div class="ba-badge good-badge">✓ 改后：条形图，按预算大小排序</div>
+        <div class="ba-title-ex good-title">研发部预算最高，行政部仅为其四分之一</div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="c4good"></canvas></div>
+        <div class="ba-note">条形图排序后，差距清晰，最大/最小值对比一眼可见。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cheat Sheet -->
+  <div class="cheatsheet">
+    <div class="cheatsheet-title">速查表 · Quick Reference</div>
+    <div class="cheat-col">
+      <h3>比较类型 → 图表</h3>
+      <div class="cheat-row"><span class="cr-label">构成（静态）</span><span class="cr-val">饼图</span></div>
+      <div class="cheat-row"><span class="cr-label">构成（动态）</span><span class="cr-val">堆积柱状图</span></div>
+      <div class="cheat-row"><span class="cr-label">排名（短标签）</span><span class="cr-val">纵向柱状图</span></div>
+      <div class="cheat-row"><span class="cr-label">排名（长标签）</span><span class="cr-val">横向条形图</span></div>
+      <div class="cheat-row"><span class="cr-label">时间序列（趋势）</span><span class="cr-val">折线图</span></div>
+      <div class="cheat-row"><span class="cr-label">时间序列（量级）</span><span class="cr-val">柱状图</span></div>
+      <div class="cheat-row"><span class="cr-label">频率分布</span><span class="cr-val">直方图</span></div>
+      <div class="cheat-row"><span class="cr-label">相关性</span><span class="cr-val">散点图 / 气泡图</span></div>
+    </div>
+    <div class="cheat-col">
+      <h3>常见错误 → 修正</h3>
+      <div class="cheat-row"><span class="cr-label">描述性标题</span><span class="cr-val">改为观点句</span></div>
+      <div class="cheat-row"><span class="cr-label">饼图超 6 片</span><span class="cr-val">合并或改条形</span></div>
+      <div class="cheat-row"><span class="cr-label">折线图比较项目</span><span class="cr-val">改用条形图</span></div>
+      <div class="cheat-row"><span class="cr-label">Y 轴不从零</span><span class="cr-val">还原零基线</span></div>
+      <div class="cheat-row"><span class="cr-label">多颜色装饰</span><span class="cr-val">只保留区分色</span></div>
+      <div class="cheat-row"><span class="cr-label">3D 效果</span><span class="cr-val">一律删除</span></div>
+      <div class="cheat-row"><span class="cr-label">一张图多信息</span><span class="cr-val">拆成多张图</span></div>
+      <div class="cheat-row"><span class="cr-label">图例在角落</span><span class="cr-val">直接标注在线旁</span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Say It with Charts · Gene Zelazny · McKinsey &amp; Company · 实操指南整理</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const GRAY = '#c8c0b4';
+const GRAY2 = '#e0d8cc';
+const RED = '#c8401a';
+const BLUE = '#2d5a8e';
+const GREEN = '#2a6b4a';
+const INK = '#1a1714';
+const MUT = '#7a7268';
+
+/* shared defaults */
+const baseOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false }, tooltip: { enabled: true } },
+  animation: false,
+};
+
+/* ── CASE 1 BAD: 8-slice pie ── */
+new Chart(document.getElementById('c1bad'), {
+  type: 'pie',
+  data: {
+    labels: ['自然搜索','付费广告','社交媒体','邮件营销','直接访问','合作伙伴','视频平台','其他'],
+    datasets: [{ data: [28,18,15,12,10,7,6,4],
+      backgroundColor: ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f','#edc948','#b07aa1','#ff9da7'],
+      borderWidth: 2, borderColor: '#f5f0e8' }]
+  },
+  options: { ...baseOpts, plugins: { legend: { display: true, position: 'right', labels: { font: { size: 10 }, boxWidth: 10, padding: 6 } } } }
+});
+
+/* ── CASE 1 GOOD: horizontal bar sorted ── */
+new Chart(document.getElementById('c1good'), {
+  type: 'bar',
+  data: {
+    labels: ['自然搜索','付费广告','社交媒体','邮件营销','直接访问','合作伙伴','视频平台','其他'],
+    datasets: [{
+      data: [28,18,15,12,10,7,6,4],
+      backgroundColor: [BLUE, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY],
+      borderWidth: 0, borderRadius: 2
+    }]
+  },
+  options: {
+    ...baseOpts,
+    indexAxis: 'y',
+    scales: {
+      x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 }, color: MUT, callback: v => v + '%' } },
+      y: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10 }, color: INK } }
+    },
+    plugins: { ...baseOpts.plugins, datalabels: { display: false },
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + '%' } } }
+  }
+});
+
+/* ── CASE 2 BAD: five clashing lines ── */
+const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+const lines = [
+  { label:'产品A', data:[120,118,115,113,117,114,116,112,110,108,106,104] },
+  { label:'产品B', data:[90,95,92,98,96,100,97,99,102,100,98,101] },
+  { label:'产品C', data:[60,62,65,68,72,78,85,94,103,112,118,126] },
+  { label:'产品D', data:[80,78,82,79,77,76,74,72,71,70,69,68] },
+  { label:'产品E', data:[50,53,51,55,54,56,55,57,56,58,57,59] },
+];
+const badColors = ['#4e79a7','#f28e2b','#e15759','#76b7b2','#59a14f'];
+new Chart(document.getElementById('c2bad'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: lines.map((l, i) => ({
+      label: l.label, data: l.data,
+      borderColor: badColors[i], borderWidth: 1.5,
+      pointRadius: 2, pointBackgroundColor: badColors[i], fill: false, tension: 0.3
+    }))
+  },
+  options: {
+    ...baseOpts,
+    scales: {
+      x: { grid: { color: '#e8e0d4' }, ticks: { font: { size: 9 }, color: MUT } },
+      y: { grid: { color: '#e8e0d4' }, ticks: { font: { size: 9 }, color: MUT } }
+    },
+    plugins: { legend: { display: true, position: 'top', labels: { font: { size: 9 }, boxWidth: 10, padding: 6 } } }
+  }
+});
+
+/* ── CASE 2 GOOD: hero line + grayed others + annotation ── */
+new Chart(document.getElementById('c2good'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      ...lines.filter(l => l.label !== '产品C').map(l => ({
+        label: l.label, data: l.data,
+        borderColor: GRAY2, borderWidth: 1,
+        pointRadius: 0, fill: false, tension: 0.3
+      })),
+      {
+        label: '产品C', data: lines[2].data,
+        borderColor: RED, borderWidth: 2.5,
+        pointRadius: [0,0,0,0,0,0,3,0,0,0,0,4],
+        pointBackgroundColor: RED, fill: false, tension: 0.3
+      }
+    ]
+  },
+  options: {
+    ...baseOpts,
+    scales: {
+      x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 9 }, color: MUT } },
+      y: { grid: { color: '#f0ebe2' }, border: { display: false }, ticks: { font: { size: 9 }, color: MUT } }
+    },
+    plugins: {
+      legend: { display: true, position: 'top', labels: {
+        filter: item => item.datasetIndex === 4,
+        font: { size: 9 }, boxWidth: 10, color: RED
+      }},
+      tooltip: { enabled: true }
+    }
+  }
+});
+
+/* ── CASE 3 BAD: truncated Y axis ── */
+const cities = ['北京','上海','广州','深圳'];
+const scores = [88, 85, 84, 86];
+new Chart(document.getElementById('c3bad'), {
+  type: 'bar',
+  data: {
+    labels: cities,
+    datasets: [{ data: scores,
+      backgroundColor: ['#4e79a7','#4e79a7','#4e79a7','#4e79a7'],
+      borderWidth: 0, borderRadius: 2 }]
+  },
+  options: {
+    ...baseOpts,
+    scales: {
+      x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 11 }, color: INK } },
+      y: { min: 80, max: 92, grid: { color: '#e8e0d4' }, border: { display: false },
+           ticks: { font: { size: 9 }, color: MUT } }
+    }
+  }
+});
+
+/* ── CASE 3 GOOD: zero-based ── */
+new Chart(document.getElementById('c3good'), {
+  type: 'bar',
+  data: {
+    labels: cities,
+    datasets: [{ data: scores,
+      backgroundColor: [BLUE, GRAY, GRAY, GRAY],
+      borderWidth: 0, borderRadius: 2 }]
+  },
+  options: {
+    ...baseOpts,
+    scales: {
+      x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 11 }, color: INK } },
+      y: { min: 0, max: 100, grid: { color: '#f0ebe2' }, border: { display: false },
+           ticks: { font: { size: 9 }, color: MUT, stepSize: 25 } }
+    },
+    plugins: { ...baseOpts.plugins,
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + ' 分' } } }
+  }
+});
+
+/* ── CASE 4 BAD: line chart for categories ── */
+const depts = ['市场部','研发部','销售部','客服部','行政部'];
+const budgets = [320, 580, 420, 190, 140];
+new Chart(document.getElementById('c4bad'), {
+  type: 'line',
+  data: {
+    labels: depts,
+    datasets: [{ data: budgets,
+      borderColor: '#4e79a7', borderWidth: 2,
+      pointRadius: 4, pointBackgroundColor: '#4e79a7',
+      fill: false, tension: 0.4 }]
+  },
+  options: {
+    ...baseOpts,
+    scales: {
+      x: { grid: { color: '#e8e0d4' }, ticks: { font: { size: 10 }, color: INK } },
+      y: { grid: { color: '#e8e0d4' }, border: { display: false },
+           ticks: { font: { size: 9 }, color: MUT, callback: v => v + '万' } }
+    }
+  }
+});
+
+/* ── CASE 4 GOOD: sorted bar chart ── */
+const sorted = depts.map((d,i) => ({ d, b: budgets[i] })).sort((a,b) => b.b - a.b);
+new Chart(document.getElementById('c4good'), {
+  type: 'bar',
+  data: {
+    labels: sorted.map(x => x.d),
+    datasets: [{ data: sorted.map(x => x.b),
+      backgroundColor: [BLUE, GRAY, GRAY, GRAY, GRAY],
+      borderWidth: 0, borderRadius: 2 }]
+  },
+  options: {
+    ...baseOpts,
+    indexAxis: 'y',
+    scales: {
+      x: { grid: { display: false }, border: { display: false },
+           ticks: { font: { size: 9 }, color: MUT, callback: v => v + '万' } },
+      y: { grid: { display: false }, border: { display: false },
+           ticks: { font: { size: 10 }, color: INK } }
+    },
+    plugins: { ...baseOpts.plugins,
+      tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + ' 万元' } } }
+  }
+});
+</script>
+
+</body>
+</html>
